@@ -1,0 +1,23 @@
+{
+  "1": "Introduction to Web Development",
+  "2": "Advanced JavaScript Concepts",
+  "3": "React Fundamentals",
+  "4": "TypeScript Best Practices",
+  "5": "Database Design & SQL",
+  "6": "REST API Development",
+  "7": "Authentication & Security",
+  "8": "Cloud Computing Basics",
+  "9": "DevOps & CI/CD",
+  "10": "Machine Learning Introduction",
+  "11": "Mobile App Development",
+  "12": "UI/UX Design Principles",
+  "13": "Microservices Architecture",
+  "14": "GraphQL & Modern APIs",
+  "15": "Performance Optimization",
+  "16": "Testing & Quality Assurance",
+  "17": "Git & Version Control",
+  "18": "Docker & Containerization",
+  "19": "Agile & Scrum Methodology",
+  "20": "System Design Patterns"
+}
+

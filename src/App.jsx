@@ -1,92 +1,88 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Timer } from "./components/Timer";
-import { TimerControls } from "./components/TimerControls";
+import React, { useState, useEffect } from "react";
+import SpinningWheel from "./components/SpinningWheel";
+import SideMenu from "./components/SideMenu";
+
+const STORAGE_KEY = 'topic_selector_state';
 
 export default function App() {
-  const FIVE_HOURS_IN_SECONDS = 5 * 60 * 60;
-  const [timeRemaining, setTimeRemaining] = useState(FIVE_HOURS_IN_SECONDS);
-  const [isActive, setIsActive] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-  const [showControls, setShowControls] = useState(true);
-  const inactivityTimer = useRef(null);
-
-  useEffect(() => {
-    let interval;
-    if (isActive && !isPaused) {
-      interval = window.setInterval(() => {
-        setTimeRemaining((time) => {
-          if (time <= 0) {
-            clearInterval(interval);
-            setIsActive(false);
-            return 0;
-          }
-          return time - 1;
-        });
-      }, 1000);
-    } else {
-      clearInterval(interval);
+  // Load initial state from localStorage or use defaults
+  const loadState = () => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return {
+          topicCount: parsed.topicCount || 15,
+          retryProbability: parsed.retryProbability || 20,
+          excludedNumbers: parsed.excludedNumbers || [],
+          selectedHistory: parsed.selectedHistory || [],
+          topicNames: parsed.topicNames || {}
+        };
+      }
+    } catch (error) {
+      console.error('Error loading state:', error);
     }
-    return () => clearInterval(interval);
-  }, [isActive, isPaused]);
+    return {
+      topicCount: 15,
+      retryProbability: 20,
+      excludedNumbers: [],
+      selectedHistory: [],
+      topicNames: {}
+    };
+  };
 
-  // Handle cursor inactivity
+  const initialState = loadState();
+  const [topicCount, setTopicCount] = useState(initialState.topicCount);
+  const [retryProbability, setRetryProbability] = useState(initialState.retryProbability);
+  const [excludedNumbers, setExcludedNumbers] = useState(initialState.excludedNumbers);
+  const [selectedHistory, setSelectedHistory] = useState(initialState.selectedHistory);
+  const [topicNames, setTopicNames] = useState(initialState.topicNames || {});
+
+  // Save state to localStorage whenever it changes
   useEffect(() => {
-    const resetInactivityTimer = () => {
-      setShowControls(true);
+    const state = {
+      topicCount,
+      retryProbability,
+      excludedNumbers,
+      selectedHistory,
+      topicNames
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }, [topicCount, retryProbability, excludedNumbers, selectedHistory, topicNames]);
+
+  const handleSpin = (result) => {
+    console.log('Spin result:', result);
+    
+    // If not a retry, exclude this number from future spins
+    if (!result.isRetry) {
+      setExcludedNumbers(prev => {
+        if (!prev.includes(result.value)) {
+          return [...prev, result.value];
+        }
+        return prev;
+      });
       
-      // Clear existing timer
-      if (inactivityTimer.current) {
-        clearTimeout(inactivityTimer.current);
+      // Add to history
+      setSelectedHistory(prev => [...prev, {
+        number: result.value,
+        timestamp: new Date().toISOString()
+      }]);
+    }
+  };
+
+  const handleToggleExclusion = (number) => {
+    setExcludedNumbers(prev => {
+      if (prev.includes(number)) {
+        return prev.filter(n => n !== number);
+      } else {
+        return [...prev, number];
       }
-      
-      // Set new timer to hide controls after 2 seconds
-      inactivityTimer.current = setTimeout(() => {
-        setShowControls(false);
-      }, 2000);
-    };
-
-    const handleMouseMove = () => {
-      resetInactivityTimer();
-    };
-
-    const handleMouseEnter = () => {
-      resetInactivityTimer();
-    };
-
-    // Add event listeners
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseenter', handleMouseEnter);
-
-    // Initialize timer
-    resetInactivityTimer();
-
-    // Cleanup
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseenter', handleMouseEnter);
-      if (inactivityTimer.current) {
-        clearTimeout(inactivityTimer.current);
-      }
-    };
-  }, []);
-
-  const handleStart = () => {
-    setIsActive(true);
-    setIsPaused(false);
+    });
   };
 
-  const handlePause = () => {
-    setIsPaused(true);
-  };
-
-  const handleResume = () => {
-    setIsPaused(false);
-  };
-
-  const handleRestart = () => {
-    setTimeRemaining(FIVE_HOURS_IN_SECONDS);
-    setIsActive(false);
-    setIsPaused(false);
+  const handleResetExclusions = () => {
+    setExcludedNumbers([]);
+    setSelectedHistory([]);
   };
 
   return (
@@ -97,24 +93,36 @@ export default function App() {
         backgroundColor: "#1a1a1a",
       }}
     >
-      <div className="flex flex-col items-center w-full p-16 mt-40 max-w-7xl">
-        <div className="w-full max-w-6xl scale-125">
-          <Timer timeRemaining={timeRemaining} />
-          <div
-            className={`transition-opacity duration-300 ${
-              showControls ? 'opacity-100' : 'opacity-0'
-            }`}
-          >
-            <TimerControls
-              isActive={isActive}
-              isPaused={isPaused}
-              onStart={handleStart}
-              onPause={handlePause}
-              onResume={handleResume}
-              onRestart={handleRestart}
-            />
-          </div>
-        </div>
+      {/* Side Menu */}
+      <SideMenu
+        topicCount={topicCount}
+        setTopicCount={setTopicCount}
+        retryProbability={retryProbability}
+        setRetryProbability={setRetryProbability}
+        excludedNumbers={excludedNumbers}
+        onToggleExclusion={handleToggleExclusion}
+        onResetExclusions={handleResetExclusions}
+        selectedHistory={selectedHistory}
+        topicNames={topicNames}
+        setTopicNames={setTopicNames}
+      />
+
+      {/* Main Content */}
+      <div className="flex flex-col items-center w-full p-8 mt-[-80px]">
+        <h1 className="text-5xl font-bold text-white mb-4 drop-shadow-lg">
+          Topic Selector Wheel
+        </h1>
+        <p className="text-xl text-white mb-16 drop-shadow-md">
+          Spin the wheel to randomly select a topic!
+        </p>
+        
+        <SpinningWheel
+          topicCount={topicCount}
+          retryProbability={retryProbability}
+          excludedNumbers={excludedNumbers}
+          topicNames={topicNames}
+          onSpin={handleSpin}
+        />
       </div>
     </div>
   );
