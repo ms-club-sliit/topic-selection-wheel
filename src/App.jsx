@@ -108,11 +108,11 @@ export default function App() {
       />
 
       {/* Main Content */}
-      <div className="flex flex-col items-center w-full p-8 mt-[-80px]">
+      <div className="flex flex-col items-center w-full p-8 mt-[-20px]">
         <h1 className="text-5xl font-bold text-white mb-4 drop-shadow-lg">
           Topic Selector Wheel
         </h1>
-        <p className="text-xl text-white mb-16 drop-shadow-md">
+        <p className="text-xl text-white mb-24 drop-shadow-md">
           Spin the wheel to randomly select a topic!
         </p>
         
