@@ -231,8 +231,8 @@ export default function SpinningWheel({ topicCount, retryProbability, excludedNu
             <div className="relative">
               <canvas
                 ref={canvasRef}
-                width="500"
-                height="500"
+                width="550"
+                height="550"
                 style={{
                   transform: `rotate(${rotation}deg)`,
                   transition: isSpinning ? 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)' : 'none',
