@@ -7,10 +7,15 @@ function useWheelScale() {
   useEffect(() => {
     const update = () => {
       const vw = window.innerWidth;
-      if (vw < 380) setScale(0.62);
-      else if (vw < 480) setScale(0.72);
-      else if (vw < 640) setScale(0.82);
-      else setScale(1);
+      if (vw < 360)       setScale(0.58);
+      else if (vw < 420)  setScale(0.66);
+      else if (vw < 480)  setScale(0.74);
+      else if (vw < 640)  setScale(0.84);
+      else if (vw < 768)  setScale(0.92);
+      else if (vw < 1024) setScale(1.0);
+      else if (vw < 1280) setScale(1.05);
+      else if (vw < 1536) setScale(1.15);
+      else                setScale(1.25);
     };
     update();
     window.addEventListener('resize', update);
