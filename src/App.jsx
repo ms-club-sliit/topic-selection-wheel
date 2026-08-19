@@ -77,24 +77,25 @@ export default function App() {
       </div>
 
       {/* Logo — absolutely positioned top-left, out of flow */}
-      <header className="absolute top-4 left-6 z-20 md:top-5 md:left-10">
-        <img src="/main-logo.png" alt="MS Club x Mini Hackathon 26" className="h-10 md:h-12" />
+      <header className="absolute top-3 left-4 z-20 md:top-5 md:left-10">
+        <img src="/main-logo.png" alt="MS Club x Mini Hackathon 26" className="h-8 sm:h-10 md:h-12" />
       </header>
 
       {/* Main content */}
-      <div className="relative z-10 flex flex-col items-center w-full px-6 pt-4 pb-6 md:px-12">
+      <div className="relative z-10 flex flex-col items-center w-full px-3 pt-3 pb-4 sm:px-6 sm:pt-4 sm:pb-6 md:px-12">
 
         {/* Title outside the card */}
-        <div className="flex items-center gap-3 mb-1">
-          <Sparkle className="w-5 h-5 text-violet-400" />
-          <Sparkle className="w-4 h-4 text-violet-300" />
-          <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent">
-            Topic Selector Wheel
+        <div className="flex items-center gap-2 sm:gap-3 mb-0.5 sm:mb-1">
+          <Sparkle className="w-3 h-3 sm:w-5 sm:h-5 text-violet-400" />
+          <Sparkle className="hidden sm:block w-4 h-4 text-violet-300" />
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
+            <span className="text-gray-900">Topic Selector </span>
+            <span className="text-blue-600">Wheel</span>
           </h1>
-          <Sparkle className="w-4 h-4 text-emerald-300" />
-          <Sparkle className="w-5 h-5 text-emerald-400" />
+          <Sparkle className="hidden sm:block w-4 h-4 text-emerald-300" />
+          <Sparkle className="w-3 h-3 sm:w-5 sm:h-5 text-emerald-400" />
         </div>
-        <p className="text-base text-slate-600 mb-6">
+        <p className="text-xs sm:text-base text-slate-600 mb-3 sm:mb-6">
           Spin the wheel to randomly select a topic!
         </p>
 
@@ -112,26 +113,40 @@ export default function App() {
         />
 
         {/* Card container */}
-        <div className="relative w-full max-w-4xl bg-white/60 backdrop-blur-xl rounded-[2rem] shadow-2xl px-8 py-8 md:px-12 md:py-10 flex flex-col items-center overflow-visible">
+        <div className="relative w-full max-w-4xl bg-white/60 backdrop-blur-xl rounded-[1.5rem] sm:rounded-[2rem] shadow-2xl flex flex-col items-center overflow-hidden">
 
-          {/* Corner sparkle decorations — 4 sparkles matching target layout */}
-          <Sparkle className="absolute top-5 left-6 w-4 h-4 text-violet-400 opacity-75" />
-          <Sparkle className="absolute top-10 left-12 w-2.5 h-2.5 text-violet-300 opacity-55" />
-          <Sparkle className="absolute top-5 right-6 w-3 h-3 text-emerald-400 opacity-75" />
-          <Sparkle className="absolute bottom-[4.5rem] left-7 w-3 h-3 text-violet-400 opacity-65" />
-          <Sparkle className="absolute bottom-[4.5rem] right-7 w-3.5 h-3.5 text-emerald-400 opacity-65" />
+          {/* Wheel content area */}
+          <div className="relative w-full px-3 pt-4 pb-3 sm:px-8 sm:pt-8 sm:pb-6 md:px-12 md:pt-10 md:pb-8 flex flex-col items-center">
 
-          <SpinningWheel
-            topicCount={topicCount}
-            retryProbability={retryProbability}
-            excludedNumbers={excludedNumbers}
-            topicNames={topicNames}
-            onSpin={handleSpin}
-          />
+            {/* Corner sparkle decorations — hidden on very small screens */}
+            <Sparkle className="hidden sm:block absolute top-5 left-6 w-4 h-4 text-violet-400 opacity-75" />
+            <Sparkle className="hidden sm:block absolute top-10 left-12 w-2.5 h-2.5 text-violet-300 opacity-55" />
+            <Sparkle className="hidden sm:block absolute top-5 right-6 w-3 h-3 text-emerald-400 opacity-75" />
+            <Sparkle className="hidden sm:block absolute bottom-6 left-7 w-3 h-3 text-violet-400 opacity-65" />
+            <Sparkle className="hidden sm:block absolute bottom-6 right-7 w-3.5 h-3.5 text-emerald-400 opacity-65" />
 
-          {/* Slogan card */}
-          <div className="mt-6 w-full max-w-lg">
-            <img src="/slogan-card.png" alt="Innovation starts here" className="w-full h-auto" />
+            <SpinningWheel
+              topicCount={topicCount}
+              retryProbability={retryProbability}
+              excludedNumbers={excludedNumbers}
+              topicNames={topicNames}
+              onSpin={handleSpin}
+            />
+          </div>
+
+          {/* Slogan footer bar — flush at card bottom */}
+          <div className="w-full px-4 pb-4">
+            <div
+              className="w-full flex items-center justify-center rounded-xl px-6 py-3"
+              style={{
+                background: 'rgba(255,255,255,0.5)',
+                border: '1px solid rgba(200,190,255,0.35)',
+              }}
+            >
+              <Sparkle className="w-3.5 h-3.5 text-violet-400 mr-4 flex-shrink-0" />
+              <img src="/slogan-card.png" alt="Innovation starts here" className="h-6 md:h-7 object-contain" />
+              <Sparkle className="w-3.5 h-3.5 text-emerald-400 ml-4 flex-shrink-0" />
+            </div>
           </div>
         </div>
       </div>

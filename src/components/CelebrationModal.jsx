@@ -76,7 +76,7 @@ export default function CelebrationModal({ selectedNumber, topicName, onClose, i
       )}
 
       {/* Modal Content */}
-      <div className="relative z-10 bg-white rounded-3xl shadow-2xl p-12 max-w-lg w-full mx-4 transform animate-scale-in">
+      <div className="relative z-10 bg-white rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-10 md:p-12 max-w-sm sm:max-w-lg w-full mx-3 sm:mx-4 transform animate-scale-in">
         {/* Ribbons */}
         {!isRetry && (
           <>
@@ -103,13 +103,13 @@ export default function CelebrationModal({ selectedNumber, topicName, onClose, i
           </svg>
         </button>
 
-        <div className="text-center mt-8">
+        <div className="text-center mt-6 sm:mt-8">
           {isRetry ? (
             <>
-              <h2 className="text-6xl font-bold text-red-500 mb-6 animate-bounce">
+              <h2 className="text-4xl sm:text-6xl font-bold text-red-500 mb-4 sm:mb-6 animate-bounce">
                 RETRY!
               </h2>
-              <p className="text-2xl text-gray-600 mb-8">
+              <p className="text-lg sm:text-2xl text-gray-600 mb-6 sm:mb-8">
                 Oops! Try spinning again!
               </p>
               <button
@@ -121,17 +121,17 @@ export default function CelebrationModal({ selectedNumber, topicName, onClose, i
             </>
           ) : (
             <>
-              <div className="mb-4">
-                <span className="text-6xl animate-bounce inline-block">🎉</span>
+              <div className="mb-3 sm:mb-4">
+                <span className="text-4xl sm:text-6xl animate-bounce inline-block">🎉</span>
               </div>
-              <h2 className="text-3xl font-bold text-gray-700 mb-4">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-700 mb-3 sm:mb-4">
                 Selected Topic
               </h2>
-              <div className="relative mb-6">
-                <div className="text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 animate-gradient">
+              <div className="relative mb-4 sm:mb-6">
+                <div className="text-7xl sm:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 animate-gradient">
                   {selectedNumber}
                 </div>
-                <div className="absolute inset-0 text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 blur-xl opacity-50 animate-gradient">
+                <div className="absolute inset-0 text-7xl sm:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 blur-xl opacity-50 animate-gradient">
                   {selectedNumber}
                 </div>
               </div>
@@ -142,16 +142,16 @@ export default function CelebrationModal({ selectedNumber, topicName, onClose, i
                   </p>
                 </div>
               )}
-              <div className="flex items-center justify-center gap-2 mb-6">
-                <span className="text-2xl">🎊</span>
-                <p className="text-lg text-gray-600 font-semibold animate-pulse">
-                  MiniHackathon 2025 - Let's Build Something Amazing!
+              <div className="flex items-center justify-center gap-2 mb-4 sm:mb-6">
+                <span className="text-xl sm:text-2xl">🎊</span>
+                <p className="text-sm sm:text-lg text-gray-600 font-semibold animate-pulse">
+                  MiniHackathon 2026 - Let's Build Something Amazing!
                 </p>
-                <span className="text-2xl">🎊</span>
+                <span className="text-xl sm:text-2xl">🎊</span>
               </div>
               <button
                 onClick={onClose}
-                className="px-10 py-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white text-xl font-bold rounded-full hover:from-purple-600 hover:to-blue-600 transform hover:scale-105 transition-all shadow-lg"
+                className="px-8 sm:px-10 py-3 sm:py-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white text-lg sm:text-xl font-bold rounded-full hover:from-purple-600 hover:to-blue-600 transform hover:scale-105 transition-all shadow-lg"
               >
                 Continue
               </button>
