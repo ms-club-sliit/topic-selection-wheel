@@ -87,10 +87,14 @@ export default function SpinningWheel({ topicCount, retryProbability, excludedNu
 
     // Draw center circle
     ctx.beginPath();
-    ctx.arc(centerX, centerY, 30, 0, 2 * Math.PI);
-    ctx.fillStyle = '#fff';
+    ctx.arc(centerX, centerY, 48, 0, 2 * Math.PI);
+    // Gradient fill for hub
+    const hubGrad = ctx.createRadialGradient(centerX - 8, centerY - 8, 4, centerX, centerY, 48);
+    hubGrad.addColorStop(0, '#ffffff');
+    hubGrad.addColorStop(1, '#e8eeff');
+    ctx.fillStyle = hubGrad;
     ctx.fill();
-    ctx.strokeStyle = '#333';
+    ctx.strokeStyle = '#c4b5fd';
     ctx.lineWidth = 3;
     ctx.stroke();
   }, [segments.length, topicCount, retryProbability, excludedNumbers]);
@@ -195,7 +199,7 @@ export default function SpinningWheel({ topicCount, retryProbability, excludedNu
   const allNumbersExcluded = segments.length === 0;
 
   return (
-    <div className="flex flex-col items-center justify-center gap-8 w-full">
+    <div className="flex flex-col items-center justify-center gap-6 w-full">
       {allNumbersExcluded ? (
         <div className="flex flex-col items-center justify-center p-12 bg-white rounded-lg shadow-xl">
           <p className="text-3xl font-bold text-red-500 mb-4">⚠️ No Topics Available</p>
@@ -206,44 +210,70 @@ export default function SpinningWheel({ topicCount, retryProbability, excludedNu
           </p>
         </div>
       ) : (
-        <div className="flex items-center justify-center gap-24 w-full">
-          {/* Spin Button - Far Left */}
-          <button
-            onClick={spinWheel}
-            disabled={isSpinning}
-            className={`px-12 py-4 text-2xl font-bold text-white rounded-full shadow-lg transition-all transform hover:scale-105 ${
-              isSpinning
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600'
-            }`}
-          >
-            {isSpinning ? 'SPINNING...' : 'SPIN THE WHEEL!'}
-          </button>
-
-          {/* Wheel - Centered */}
+        <div className="flex items-center justify-center w-full">
+          {/* Wheel - Centered, with spin button inside */}
           <div className="relative">
             {/* Pointer/Arrow at top */}
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-4 z-10">
-              <div className="w-0 h-0 border-l-[20px] border-l-transparent border-r-[20px] border-r-transparent border-t-[30px] border-t-yellow-400 drop-shadow-lg"></div>
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-3 z-10">
+              <div className="w-0 h-0 border-l-[16px] border-l-transparent border-r-[16px] border-r-transparent border-t-[24px] border-t-violet-600 drop-shadow-lg"></div>
             </div>
 
             {/* Spinning Wheel */}
             <div className="relative">
               <canvas
                 ref={canvasRef}
-                width="550"
-                height="550"
+                width="420"
+                height="420"
                 style={{
                   transform: `rotate(${rotation}deg)`,
                   transition: isSpinning ? 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)' : 'none',
                 }}
                 className="drop-shadow-2xl"
               />
+
+              {/* Center hub overlay — acts as spin button */}
+              <button
+                onClick={spinWheel}
+                disabled={isSpinning}
+                aria-label="Spin the wheel"
+                className="absolute inset-0 m-auto w-24 h-24 rounded-full flex flex-col items-center justify-center"
+                style={{
+                  background: 'radial-gradient(circle at 35% 35%, #ffffff, #e8eeff)',
+                  border: '3px solid #c4b5fd',
+                  boxShadow: isSpinning
+                    ? '0 0 0 4px rgba(167,139,250,0.3), inset 0 2px 8px rgba(0,0,0,0.1)'
+                    : '0 4px 20px rgba(139,92,246,0.35), inset 0 2px 8px rgba(0,0,0,0.08)',
+                  cursor: isSpinning ? 'not-allowed' : 'pointer',
+                  transition: 'box-shadow 0.3s ease',
+                  zIndex: 20,
+                }}
+              >
+                <span
+                  className="font-extrabold text-center leading-tight"
+                  style={{
+                    fontSize: '13px',
+                    letterSpacing: '0.02em',
+                    background: 'linear-gradient(135deg, #7c3aed, #6366f1)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}
+                >
+                  {isSpinning ? (
+                    <>
+                      <span style={{ display: 'block', fontSize: '11px' }}>SPINNING</span>
+                      <span style={{ display: 'block', fontSize: '9px', fontWeight: 600, opacity: 0.7 }}>PLEASE WAIT</span>
+                    </>
+                  ) : (
+                    <>
+                      <span style={{ display: 'block' }}>SPIN</span>
+                      <span style={{ display: 'block', fontSize: '10px', fontWeight: 600, opacity: 0.8 }}>THE WHEEL</span>
+                    </>
+                  )}
+                </span>
+              </button>
             </div>
           </div>
-
-          {/* Spacer for balance */}
-          <div className="w-[280px]"></div>
         </div>
       )}
 
@@ -259,4 +289,3 @@ export default function SpinningWheel({ topicCount, retryProbability, excludedNu
     </div>
   );
 }
-
