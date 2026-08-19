@@ -12,24 +12,27 @@ export default function SpinningWheel({ topicCount, retryProbability, excludedNu
   const generateSegments = () => {
     const segments = [];
     const hasRetry = retryProbability > 0;
-    
+
     // Add numbered segments (excluding excluded numbers)
     for (let i = 1; i <= topicCount; i++) {
       if (!excludedNumbers.includes(i)) {
         segments.push({ value: i, label: i.toString(), isRetry: false });
       }
     }
-    
+
     // Add just 1 retry segment if enabled
     if (hasRetry && segments.length > 0) {
       segments.push({ value: 'retry', label: 'Retry', isRetry: true });
     }
-    
+
     return segments;
   };
 
   const segments = generateSegments();
   const segmentAngle = segments.length > 0 ? 360 / segments.length : 0;
+
+  // Hub radius in canvas pixels (must match the overlay button size)
+  const HUB_RADIUS = 52;
 
   // Draw the wheel
   useEffect(() => {
@@ -44,8 +47,7 @@ export default function SpinningWheel({ topicCount, retryProbability, excludedNu
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw segments
-    // Banner/Clip art colors
+    // Segment fill colors (4 cycling colors matching the banner)
     const colors = [
       '#D53F34', // Red
       '#E4AB09', // Yellow/Gold
@@ -62,40 +64,40 @@ export default function SpinningWheel({ topicCount, retryProbability, excludedNu
       ctx.moveTo(centerX, centerY);
       ctx.arc(centerX, centerY, radius, startAngle, endAngle);
       ctx.closePath();
-      
-      // Use banner colors, cycling through them
-      if (segment.isRetry) {
-        ctx.fillStyle = '#D53F34'; // Red for retry
-      } else {
-        ctx.fillStyle = colors[index % colors.length];
-      }
+
+      ctx.fillStyle = segment.isRetry ? '#D53F34' : colors[index % colors.length];
       ctx.fill();
       ctx.strokeStyle = '#fff';
       ctx.lineWidth = 3;
       ctx.stroke();
 
-      // Draw text
+      // Draw text label
       ctx.save();
       ctx.translate(centerX, centerY);
       ctx.rotate((startAngle + endAngle) / 2);
       ctx.textAlign = 'center';
       ctx.fillStyle = '#fff';
-      ctx.font = segment.isRetry ? 'bold 20px Arial' : 'bold 24px Arial';
+      const fontSize = segments.length > 8 ? 20 : 24;
+      ctx.font = segment.isRetry
+        ? `bold ${fontSize - 2}px Arial`
+        : `bold ${fontSize}px Arial`;
       ctx.fillText(segment.label, radius * 0.65, 8);
       ctx.restore();
     });
 
-    // Draw center circle
+    // Draw center hub circle (visual background for the overlay button)
     ctx.beginPath();
-    ctx.arc(centerX, centerY, 48, 0, 2 * Math.PI);
-    // Gradient fill for hub
-    const hubGrad = ctx.createRadialGradient(centerX - 8, centerY - 8, 4, centerX, centerY, 48);
+    ctx.arc(centerX, centerY, HUB_RADIUS, 0, 2 * Math.PI);
+    const hubGrad = ctx.createRadialGradient(
+      centerX - 10, centerY - 10, 4,
+      centerX, centerY, HUB_RADIUS
+    );
     hubGrad.addColorStop(0, '#ffffff');
-    hubGrad.addColorStop(1, '#e8eeff');
+    hubGrad.addColorStop(1, '#ede9fe');
     ctx.fillStyle = hubGrad;
     ctx.fill();
-    ctx.strokeStyle = '#c4b5fd';
-    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#a78bfa';
+    ctx.lineWidth = 3.5;
     ctx.stroke();
   }, [segments.length, topicCount, retryProbability, excludedNumbers]);
 
@@ -107,18 +109,16 @@ export default function SpinningWheel({ topicCount, retryProbability, excludedNu
 
     // Determine if we should land on retry based on probability
     const shouldRetry = Math.random() * 100 < retryProbability;
-    
+
     // Find retry segment index if it exists
     const retryIndex = segments.findIndex(seg => seg.isRetry);
     const hasRetrySegment = retryIndex !== -1;
-    
+
     // Determine target segment
     let targetSegmentIndex;
     if (shouldRetry && hasRetrySegment) {
-      // Land on retry segment
       targetSegmentIndex = retryIndex;
     } else {
-      // Land on a random non-retry segment
       const nonRetryIndices = segments
         .map((seg, idx) => (!seg.isRetry ? idx : -1))
         .filter(idx => idx !== -1);
@@ -126,38 +126,25 @@ export default function SpinningWheel({ topicCount, retryProbability, excludedNu
     }
 
     // Calculate rotation to land on target segment
-    // Segments are drawn starting at -90deg (top), with segment 0 at the top
-    // After rotation R, segment i center is at: -90 + i*segmentAngle + segmentAngle/2 + R
-    // For segment i to be at the pointer (top = -90deg), we need:
-    // -90 + i*segmentAngle + segmentAngle/2 + R = -90
-    // Therefore: R = -(i*segmentAngle + segmentAngle/2)
-    
-    // Target total rotation to position segment at pointer
     const segmentCenterOffset = targetSegmentIndex * segmentAngle + segmentAngle / 2;
     let targetRotation = -segmentCenterOffset;
-    
-    // Normalize to positive and ensure we rotate forward from current position
+
+    // Ensure we rotate forward from current position
     const currentRotation = rotation % 360;
     while (targetRotation <= currentRotation) {
       targetRotation += 360;
     }
-    
+
     // Random spins between 5 and 10 full rotations
-    const minSpins = 5;
-    const maxSpins = 10;
-    const spins = Math.floor(Math.random() * (maxSpins - minSpins + 1)) + minSpins;
-    
-    // Add full rotations to make it more exciting
+    const spins = Math.floor(Math.random() * 6) + 5;
     targetRotation += spins * 360;
-    
+
     // Add random offset within segment for natural look
     const segmentOffset = (Math.random() - 0.5) * segmentAngle * 0.6;
-    
-    // Calculate additional rotation needed
     const additionalRotation = targetRotation - rotation + segmentOffset;
-    
+
     const selected = segments[targetSegmentIndex];
-    
+
     // Debug logging
     const finalRotation = rotation + additionalRotation;
     const finalSegmentPos = (-90 + segmentCenterOffset + finalRotation) % 360;
@@ -172,7 +159,7 @@ export default function SpinningWheel({ topicCount, retryProbability, excludedNu
       segmentWillBeAt: finalSegmentPos.toFixed(2) + '° (should be near -90° or 270°)',
       segments: segments.map((s, i) => `${i}:${s.value}`)
     });
-    
+
     setRotation(rotation + additionalRotation);
 
     // After animation completes
@@ -185,8 +172,7 @@ export default function SpinningWheel({ topicCount, retryProbability, excludedNu
 
   const handleCloseModal = () => {
     setShowModal(false);
-    
-    // Wait a moment before removing from wheel to allow modal to close smoothly
+
     setTimeout(() => {
       if (selectedNumber && onSpin) {
         onSpin(selectedNumber);
@@ -197,6 +183,9 @@ export default function SpinningWheel({ topicCount, retryProbability, excludedNu
 
   // Check if all numbers are excluded
   const allNumbersExcluded = segments.length === 0;
+
+  // Hub overlay size in px (= HUB_RADIUS * 2, matching canvas draw)
+  const hubPx = HUB_RADIUS * 2; // 104px
 
   return (
     <div className="flex flex-col items-center justify-center gap-6 w-full">
@@ -211,14 +200,15 @@ export default function SpinningWheel({ topicCount, retryProbability, excludedNu
         </div>
       ) : (
         <div className="flex items-center justify-center w-full">
-          {/* Wheel - Centered, with spin button inside */}
+          {/* Wheel wrapper */}
           <div className="relative">
+
             {/* Pointer/Arrow at top */}
             <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-3 z-10">
-              <div className="w-0 h-0 border-l-[16px] border-l-transparent border-r-[16px] border-r-transparent border-t-[24px] border-t-violet-600 drop-shadow-lg"></div>
+              <div className="w-0 h-0 border-l-[16px] border-l-transparent border-r-[16px] border-r-transparent border-t-[24px] border-t-violet-600 drop-shadow-lg" />
             </div>
 
-            {/* Spinning Wheel */}
+            {/* Canvas + hub overlay wrapper */}
             <div className="relative">
               <canvas
                 ref={canvasRef}
@@ -226,51 +216,79 @@ export default function SpinningWheel({ topicCount, retryProbability, excludedNu
                 height="420"
                 style={{
                   transform: `rotate(${rotation}deg)`,
-                  transition: isSpinning ? 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)' : 'none',
+                  transition: isSpinning
+                    ? 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)'
+                    : 'none',
+                  display: 'block',
                 }}
                 className="drop-shadow-2xl"
               />
 
-              {/* Center hub overlay — acts as spin button */}
+              {/* Center hub overlay — acts as the spin button, stays fixed (not spinning) */}
               <button
                 onClick={spinWheel}
                 disabled={isSpinning}
                 aria-label="Spin the wheel"
-                className="absolute inset-0 m-auto w-24 h-24 rounded-full flex flex-col items-center justify-center"
+                className="absolute rounded-full flex flex-col items-center justify-center"
                 style={{
-                  background: 'radial-gradient(circle at 35% 35%, #ffffff, #e8eeff)',
-                  border: '3px solid #c4b5fd',
+                  width: `${hubPx}px`,
+                  height: `${hubPx}px`,
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  background: 'radial-gradient(circle at 35% 35%, #ffffff 0%, #ede9fe 100%)',
+                  border: '3.5px solid #a78bfa',
                   boxShadow: isSpinning
-                    ? '0 0 0 4px rgba(167,139,250,0.3), inset 0 2px 8px rgba(0,0,0,0.1)'
-                    : '0 4px 20px rgba(139,92,246,0.35), inset 0 2px 8px rgba(0,0,0,0.08)',
+                    ? '0 0 0 5px rgba(167,139,250,0.25), inset 0 2px 10px rgba(0,0,0,0.08)'
+                    : '0 6px 24px rgba(139,92,246,0.4), inset 0 2px 10px rgba(0,0,0,0.06)',
                   cursor: isSpinning ? 'not-allowed' : 'pointer',
-                  transition: 'box-shadow 0.3s ease',
+                  transition: 'box-shadow 0.3s ease, transform 0.3s ease',
                   zIndex: 20,
                 }}
               >
-                <span
-                  className="font-extrabold text-center leading-tight"
-                  style={{
-                    fontSize: '13px',
-                    letterSpacing: '0.02em',
+                {isSpinning ? (
+                  <span style={{
+                    display: 'block',
+                    fontSize: '11px',
+                    fontWeight: 800,
+                    letterSpacing: '0.05em',
                     background: 'linear-gradient(135deg, #7c3aed, #6366f1)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     backgroundClip: 'text',
-                  }}
-                >
-                  {isSpinning ? (
-                    <>
-                      <span style={{ display: 'block', fontSize: '11px' }}>SPINNING</span>
-                      <span style={{ display: 'block', fontSize: '9px', fontWeight: 600, opacity: 0.7 }}>PLEASE WAIT</span>
-                    </>
-                  ) : (
-                    <>
-                      <span style={{ display: 'block' }}>SPIN</span>
-                      <span style={{ display: 'block', fontSize: '10px', fontWeight: 600, opacity: 0.8 }}>THE WHEEL</span>
-                    </>
-                  )}
-                </span>
+                  }}>
+                    SPINNING…
+                  </span>
+                ) : (
+                  <>
+                    <span style={{
+                      display: 'block',
+                      fontSize: '19px',
+                      fontWeight: 900,
+                      letterSpacing: '0.04em',
+                      lineHeight: 1.1,
+                      background: 'linear-gradient(135deg, #7c3aed, #6366f1)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      backgroundClip: 'text',
+                    }}>
+                      SPIN
+                    </span>
+                    <span style={{
+                      display: 'block',
+                      fontSize: '11px',
+                      fontWeight: 700,
+                      letterSpacing: '0.08em',
+                      lineHeight: 1.3,
+                      background: 'linear-gradient(135deg, #7c3aed, #6366f1)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      backgroundClip: 'text',
+                    }}>
+                      THE WHEEL
+                    </span>
+                  </>
+                )}
               </button>
             </div>
           </div>

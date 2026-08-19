@@ -76,13 +76,13 @@ export default function App() {
         <div className="absolute right-[14%] bottom-[8%] w-[400px] h-[400px] rounded-full bg-lime-400/50 blur-[130px]" />
       </div>
 
-      {/* Everything above the blobs */}
-      <div className="relative z-10 flex flex-col items-center w-full px-6 py-6 md:px-12">
+      {/* Logo — absolutely positioned top-left, out of flow */}
+      <header className="absolute top-4 left-6 z-20 md:top-5 md:left-10">
+        <img src="/main-logo.png" alt="MS Club x Mini Hackathon 26" className="h-10 md:h-12" />
+      </header>
 
-        {/* Header */}
-        <header className="flex items-center justify-between w-full max-w-6xl mb-6">
-          <img src="/main-logo.png" alt="MS Club x Mini Hackathon 26" className="h-12 md:h-14" />
-        </header>
+      {/* Main content */}
+      <div className="relative z-10 flex flex-col items-center w-full px-6 pt-4 pb-6 md:px-12">
 
         {/* Title outside the card */}
         <div className="flex items-center gap-3 mb-1">
@@ -112,14 +112,14 @@ export default function App() {
         />
 
         {/* Card container */}
-        <div className="relative w-full max-w-4xl bg-white/60 backdrop-blur-xl rounded-[2rem] shadow-2xl px-6 py-8 md:px-12 md:py-10 flex flex-col items-center">
+        <div className="relative w-full max-w-4xl bg-white/60 backdrop-blur-xl rounded-[2rem] shadow-2xl px-8 py-8 md:px-12 md:py-10 flex flex-col items-center overflow-visible">
 
-          {/* Corner sparkle decorations inside the card */}
-          <Sparkle className="absolute top-6 left-8 w-4 h-4 text-violet-300 opacity-70" />
-          <Sparkle className="absolute top-12 left-14 w-3 h-3 text-violet-400 opacity-50" />
-          <Sparkle className="absolute top-6 right-8 w-4 h-4 text-emerald-300 opacity-70" />
-          <Sparkle className="absolute bottom-16 left-10 w-3 h-3 text-violet-400 opacity-60" />
-          <Sparkle className="absolute bottom-16 right-10 w-4 h-4 text-emerald-400 opacity-60" />
+          {/* Corner sparkle decorations — 4 sparkles matching target layout */}
+          <Sparkle className="absolute top-5 left-6 w-4 h-4 text-violet-400 opacity-75" />
+          <Sparkle className="absolute top-10 left-12 w-2.5 h-2.5 text-violet-300 opacity-55" />
+          <Sparkle className="absolute top-5 right-6 w-3 h-3 text-emerald-400 opacity-75" />
+          <Sparkle className="absolute bottom-[4.5rem] left-7 w-3 h-3 text-violet-400 opacity-65" />
+          <Sparkle className="absolute bottom-[4.5rem] right-7 w-3.5 h-3.5 text-emerald-400 opacity-65" />
 
           <SpinningWheel
             topicCount={topicCount}
@@ -129,9 +129,45 @@ export default function App() {
             onSpin={handleSpin}
           />
 
-          {/* Tagline bar (using your exported slogan-card image) */}
-          <div className="mt-6 w-full max-w-xl">
-            <img src="/slogan-card.png" alt="Innovation starts here" className="w-full h-auto" />
+          {/* Slogan bar — styled inline to match target design */}
+          <div className="mt-6 w-full max-w-lg">
+            <div
+              className="flex items-center justify-between gap-3 px-5 py-3 rounded-2xl"
+              style={{
+                background: 'rgba(255,255,255,0.55)',
+                backdropFilter: 'blur(12px)',
+                border: '1px solid rgba(200,190,255,0.45)',
+                boxShadow: '0 2px 16px rgba(139,92,246,0.08)',
+              }}
+            >
+              {/* Left side */}
+              <div className="flex items-center gap-2 text-violet-400">
+                <Sparkle className="w-3.5 h-3.5" />
+                <span className="w-px h-5 bg-violet-200 rounded-full" />
+              </div>
+
+              {/* Text */}
+              <p className="flex-1 text-center text-slate-700 font-medium tracking-wide" style={{ fontSize: '15px' }}>
+                <span
+                  className="font-bold"
+                  style={{
+                    background: 'linear-gradient(135deg, #6366f1, #7c3aed)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}
+                >
+                  Innovation
+                </span>{' '}
+                starts here.
+              </p>
+
+              {/* Right side */}
+              <div className="flex items-center gap-2 text-emerald-400">
+                <span className="w-px h-5 bg-emerald-200 rounded-full" />
+                <Sparkle className="w-3.5 h-3.5" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
