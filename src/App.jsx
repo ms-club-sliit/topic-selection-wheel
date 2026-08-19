@@ -12,7 +12,7 @@ export default function App() {
       if (saved) {
         const parsed = JSON.parse(saved);
         return {
-          topicCount: parsed.topicCount || 15,
+          topicCount: parsed.topicCount || 10,
           retryProbability: parsed.retryProbability || 20,
           excludedNumbers: parsed.excludedNumbers || [],
           selectedHistory: parsed.selectedHistory || [],
@@ -23,7 +23,7 @@ export default function App() {
       console.error('Error loading state:', error);
     }
     return {
-      topicCount: 15,
+      topicCount: 10,
       retryProbability: 20,
       excludedNumbers: [],
       selectedHistory: [],
@@ -86,13 +86,17 @@ export default function App() {
   };
 
   return (
-    <div
-      className="flex flex-col items-center justify-center w-full min-h-screen bg-center bg-cover"
-      style={{
-        backgroundImage: `url(https://uploadthingy.s3.us-west-1.amazonaws.com/3swgVz7qTyyFqUQhK5yy43/Meeting_Banner.png)`,
-        backgroundColor: "#1a1a1a",
-      }}
-    >
+    <div className="relative flex flex-col items-center justify-center w-full min-h-screen bg-white overflow-hidden">
+  {/* Gradient mesh background */}
+  <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div className="absolute -left-36 -bottom-20 w-[500px] h-[500px] rounded-full bg-violet-600/75 blur-[170px]" />
+    <div className="absolute -right-40 -top-32 w-[500px] h-[500px] rounded-full bg-emerald-500/70 blur-[180px]" />
+    <div className="absolute left-[42%] top-[28%] w-[400px] h-[400px] rounded-full bg-sky-500/65 blur-[150px]" />
+    <div className="absolute left-[12%] top-[18%] w-[400px] h-[400px] rounded-full bg-fuchsia-500/50 blur-[130px]" />
+    <div className="absolute right-[14%] bottom-[8%] w-[400px] h-[400px] rounded-full bg-lime-400/50 blur-[130px]" />
+  </div>
+
+  {/* wrap your existing content in a relative z-10 div so it sits above the blobs */}
       {/* Side Menu */}
       <SideMenu
         topicCount={topicCount}
