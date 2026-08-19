@@ -129,45 +129,9 @@ export default function App() {
             onSpin={handleSpin}
           />
 
-          {/* Slogan bar — styled inline to match target design */}
+          {/* Slogan card */}
           <div className="mt-6 w-full max-w-lg">
-            <div
-              className="flex items-center justify-between gap-3 px-5 py-3 rounded-2xl"
-              style={{
-                background: 'rgba(255,255,255,0.55)',
-                backdropFilter: 'blur(12px)',
-                border: '1px solid rgba(200,190,255,0.45)',
-                boxShadow: '0 2px 16px rgba(139,92,246,0.08)',
-              }}
-            >
-              {/* Left side */}
-              <div className="flex items-center gap-2 text-violet-400">
-                <Sparkle className="w-3.5 h-3.5" />
-                <span className="w-px h-5 bg-violet-200 rounded-full" />
-              </div>
-
-              {/* Text */}
-              <p className="flex-1 text-center text-slate-700 font-medium tracking-wide" style={{ fontSize: '15px' }}>
-                <span
-                  className="font-bold"
-                  style={{
-                    background: 'linear-gradient(135deg, #6366f1, #7c3aed)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                  }}
-                >
-                  Innovation
-                </span>{' '}
-                starts here.
-              </p>
-
-              {/* Right side */}
-              <div className="flex items-center gap-2 text-emerald-400">
-                <span className="w-px h-5 bg-emerald-200 rounded-full" />
-                <Sparkle className="w-3.5 h-3.5" />
-              </div>
-            </div>
+            <img src="/slogan-card.png" alt="Innovation starts here" className="w-full h-auto" />
           </div>
         </div>
       </div>
