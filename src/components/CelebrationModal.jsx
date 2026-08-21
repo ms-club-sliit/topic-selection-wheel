@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 export default function CelebrationModal({ selectedNumber, topicName, onClose, isRetry }) {
   const [confetti, setConfetti] = useState([]);
@@ -23,7 +24,7 @@ export default function CelebrationModal({ selectedNumber, topicName, onClose, i
 
   if (!selectedNumber) return null;
 
-  return (
+  return createPortal((
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-3 sm:p-6">
       {/* Backdrop */}
       <div 
@@ -160,5 +161,5 @@ export default function CelebrationModal({ selectedNumber, topicName, onClose, i
         </div>
       </div>
     </div>
-  );
+  ), document.body);
 }
