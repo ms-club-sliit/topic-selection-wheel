@@ -24,10 +24,10 @@ export default function CelebrationModal({ selectedNumber, topicName, onClose, i
   if (!selectedNumber) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-3 sm:p-6">
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm"
+        className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm"
         onClick={onClose}
       ></div>
 
@@ -35,7 +35,7 @@ export default function CelebrationModal({ selectedNumber, topicName, onClose, i
       {!isRetry && confetti.map((piece) => (
         <div
           key={piece.id}
-          className="absolute top-0 w-2 h-2 animate-fall"
+          className="fixed top-0 w-2 h-2 pointer-events-none animate-fall"
           style={{
             left: `${piece.left}%`,
             animationDelay: `${piece.animationDelay}s`,
@@ -53,7 +53,7 @@ export default function CelebrationModal({ selectedNumber, topicName, onClose, i
             return (
               <div
                 key={`balloon-${i}`}
-                className="absolute animate-float"
+                className="fixed pointer-events-none animate-float"
                 style={{
                   left: `${10 + i * 12}%`,
                   bottom: '-100px',
@@ -76,7 +76,7 @@ export default function CelebrationModal({ selectedNumber, topicName, onClose, i
       )}
 
       {/* Modal Content */}
-      <div className="relative z-10 bg-white rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-10 md:p-12 max-w-sm sm:max-w-lg w-full mx-3 sm:mx-4 transform animate-scale-in">
+      <div className="relative z-10 my-auto w-full max-w-2xl lg:max-w-3xl max-h-[calc(100vh-1.5rem)] sm:max-h-[calc(100vh-3rem)] overflow-y-auto bg-white rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-10 md:p-12 transform animate-scale-in">
         {/* Ribbons */}
         {!isRetry && (
           <>
@@ -136,8 +136,8 @@ export default function CelebrationModal({ selectedNumber, topicName, onClose, i
                 </div>
               </div>
               {topicName && (
-                <div className="mb-6 px-6 py-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl border-2 border-blue-200">
-                  <p className="text-2xl font-bold text-gray-800 text-center leading-relaxed">
+                <div className="mb-6 px-4 sm:px-8 py-5 sm:py-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl border-2 border-blue-200">
+                  <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 text-center leading-relaxed break-words [overflow-wrap:anywhere]">
                     {topicName}
                   </p>
                 </div>
@@ -162,4 +162,3 @@ export default function CelebrationModal({ selectedNumber, topicName, onClose, i
     </div>
   );
 }
-
