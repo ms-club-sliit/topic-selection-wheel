@@ -73,12 +73,15 @@ export default function SideMenu({
       {/* Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-6 right-6 z-50 p-3 bg-white rounded-full shadow-lg hover:bg-gray-100 transition-all transform hover:scale-110"
+        className="fixed top-3 right-3 z-50 p-2 sm:p-2.5 md:p-3
+                   bg-white rounded-full shadow-lg
+                   hover:bg-gray-100 transition-all transform hover:scale-110
+                   sm:top-4 sm:right-4 md:top-5 md:right-5 xl:top-6 xl:right-6"
         aria-label="Toggle menu"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6 text-gray-700"
+          className="h-5 w-5 sm:h-6 sm:w-6 text-gray-700"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -91,14 +94,14 @@ export default function SideMenu({
         </svg>
       </button>
 
-      {/* Side Menu */}
+      {/* Side Menu Drawer */}
       <div
         className={`fixed top-0 right-0 h-full bg-white shadow-2xl transition-transform duration-300 ease-in-out z-40 overflow-y-auto ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
-        style={{ width: '380px' }}
+        style={{ width: 'min(100vw, 380px)' }}
       >
-        <div className="p-8 pt-20 pb-8">
+        <div className="p-5 pt-16 pb-6 sm:p-8 sm:pt-20 sm:pb-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-8">Wheel Settings</h2>
 
           {/* JSON File Upload */}

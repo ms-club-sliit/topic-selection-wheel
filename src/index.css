@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  font-family: 'Inter', sans-serif;
+}
+
 /* Custom Slider Styles */
 input[type="range"].slider::-webkit-slider-thumb {
   -webkit-appearance: none;
